@@ -1,0 +1,92 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Markdown to HTML Converter</title>
+    <!-- Highlight.js CSS theme -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/github-dark.min.css">
+    <!-- Marked.js library -->
+    <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+    <!-- Highlight.js library -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
+    <style>
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+            margin: 20px;
+            line-height: 1.6;
+            color: #333;
+            background-color: #f8f8f8;
+        }
+        h1, h2, h3, h4, h5, h6 {
+            color: #222;
+            margin-top: 1em;
+            margin-bottom: 0.5em;
+        }
+        #markdown-output {
+            border: 1px solid #e0e0e0;
+            padding: 20px;
+            background-color: #ffffff;
+            margin-top: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+        }
+        /* Basic styling for code blocks - highlight.js theme handles most */
+        pre {
+            background: #282c34; /* default highlight.js dark background */
+            padding: 1em;
+            overflow-x: auto;
+            border-radius: 6px;
+            margin-top: 1em;
+            margin-bottom: 1em;
+        }
+        code {
+            font-family: 'SFMono-Regular', Consolas, 'Liberation Mono', Menlo, Courier, monospace;
+            font-size: 0.95em;
+        }
+    </style>
+</head>
+<body>
+    <h1>Converted Markdown</h1>
+    <div id="markdown-output">
+        Loading and converting markdown...
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Raw attachment data from the brief
+            const attachmentDataUrl = "data:text/markdown;base64,IyBNeSBNYXJrZG93bg0KDQpgYGBqcwpjb25zb2xlLmxvZygiSGVsbG8sIFdvcmxkISIpOwojYGBg";
+
+            // Extract the base64 part of the data URL
+            const base64String = attachmentDataUrl.split(',')[1];
+
+            // Decode the base64 string to get the plain text Markdown content
+            const markdownContent = atob(base64String);
+
+            // Configure marked.js to integrate with highlight.js for syntax highlighting
+            marked.setOptions({
+                highlight: function(code, lang) {
+                    // Check if the language is valid for highlight.js, otherwise default to 'plaintext'
+                    const language = hljs.getLanguage(lang) ? lang : 'plaintext';
+                    return hljs.highlight(code, { language }).value;
+                },
+                langPrefix: 'hljs language-', // Prefix for language classes in highlight.js
+                gfm: true // Enable GitHub Flavored Markdown
+            });
+
+            // Convert the Markdown content to HTML
+            const htmlContent = marked.parse(markdownContent);
+
+            // Get the output div and insert the generated HTML
+            const outputDiv = document.getElementById('markdown-output');
+            outputDiv.innerHTML = htmlContent;
+
+            // Apply highlight.js to all code blocks within the rendered HTML
+            hljs.highlightAll();
+
+            console.log("Markdown processing complete. Content rendered and highlighted.");
+        });
+    </script>
+</body>
+</html>
